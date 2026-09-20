@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens (BALOTLY_FRONTEND_SPEC.md, Part 1).
+ *
+ * Declared with @theme so every value is a Tailwind utility (bg-paper,
+ * text-ink, border-line, font-display) and a CSS variable (--color-ink).
+ * Components use these names, never a hex code or a font name.
+ *
+ * Light, paper-toned and high-legibility on purpose: the primary user is on
+ * a cheap phone screen in daylight. There is no dark theme.
+ */
+@theme {
+  /* Color */
+  --color-ink: #14171f;         /* body text, headings */
+  --color-paper: #f7f6f2;       /* page background */
+  --color-green: #0f8a5f;       /* primary actions, confirmed/success */
+  --color-green-deep: #0c6f4c;  /* primary action pressed */
+  --color-gold: #e3a72e;        /* live counts, rank #1, most popular; never a fill */
+  --color-line: #dedcd3;        /* borders, dividers */
+  --color-red: #c93b3b;         /* errors, disqualification, failed payment */
+  --color-muted: #5f6470;       /* secondary text on paper, 4.5:1 against paper */
+  --color-surface: #ffffff;     /* cards and inputs sit slightly above paper */
+  --color-skeleton: #e9e7e0;    /* loading placeholders */
+
+  /* Type: two families, two roles. Display for headings and standalone
+     numbers; sans for body and UI. The variables are set by next/font in
+     layout.tsx. */
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-ibm-plex-sans), ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale. Numbers are the hero, so the display steps go large. */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.25rem;
+  --text-4xl: 2.5rem;
+  --text-4xl--line-height: 2.75rem;
+  --text-5xl: 3.25rem;
+  --text-5xl--line-height: 1;
+  --text-6xl: 4rem;
+  --text-6xl--line-height: 1;
+
+  /* Layout */
+  --container-voter: 26.25rem; /* 420px: voter pages are a checkout, not a website */
+  --spacing-tap: 2.75rem;      /* 44px minimum tap target */
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Inputs at 16px so iOS Safari does not zoom the page on focus. */
+  input,
+  select,
+  textarea,
+  button {
+    font-size: var(--text-base);
+  }
+
+  /* Anything that wants to reach past the viewport wraps instead. */
+  * {
+    min-width: 0;
+  }
+}
