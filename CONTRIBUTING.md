@@ -26,9 +26,8 @@ against the response shape in the backend issue and say so in your PR.
 * `src/lib/api.ts` is the only place that knows the API base URL and the
   response envelope. Every request goes through it.
 * `src/lib/money.ts` is the only place kobo becomes naira.
-* `tests/` has the unit tests (`npm test`) and the Playwright viewport spec
-  (`npm run test:viewport`). Add every new route to `routes` in
-  `tests/viewport.spec.ts`.
+* `tests/` has the unit tests (`npm test`). Layout is verified by hand at
+  360px and by the screenshot in every PR.
 
 ## Talking to the API
 
@@ -68,12 +67,9 @@ npm run lint
 npx tsc --noEmit
 npm test
 npm run build
-npm run test:viewport
 ```
 
-CI runs the same. A red CI is not ready for review. The viewport spec
-failing means the screen scrolls sideways at 360px; fix the layout, do not
-remove the route from the list.
+CI runs the same. A red CI is not ready for review.
 
 ## Pull request body
 

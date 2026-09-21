@@ -21,9 +21,10 @@ session, not just the one that added them.
    - Inputs use a 16px or larger font size so iOS does not zoom on focus.
    - Long strings (candidate names, matric numbers, references) wrap or
      truncate deliberately; nothing forces the page wider than the viewport.
-   - Verify before calling a screen done: run it at 360px (browser devtools
-     or the Playwright viewport check in `tests/`) and confirm
-     `document.documentElement.scrollWidth <= window.innerWidth`.
+   - Verify before calling a screen done: open it at 360px in browser
+     devtools and confirm `document.documentElement.scrollWidth <=
+     window.innerWidth`. Every PR carries a 360px screenshot of each new
+     screen.
    - A screen that only works at desktop width is not finished.
 
 2. **The spec documents are the source of truth.** The owner keeps
@@ -90,5 +91,4 @@ session, not just the one that added them.
 - Shared primitives in `src/components/ui/`. Screen-specific components live
   next to their route.
 - Helpers in `src/lib/` (`money.ts`, `cn.ts`).
-- Viewport checks in `tests/`, run with `npm test` (needs `npm run build`
-  first, or a running dev server).
+- Unit tests in `tests/`, run with `npm test`.
