@@ -1,7 +1,28 @@
-import { forwardRef, type ButtonHTMLAttributes } from "react";
+import Link from "next/link";
+import { forwardRef, type ButtonHTMLAttributes, type ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 
 type Variant = "primary" | "secondary" | "danger";
+
+const variantClasses: Record<Variant, string> = {
+  primary:
+    "bg-green text-surface hover:bg-green-deep active:bg-green-deep focus-visible:outline-green",
+  secondary:
+    "bg-surface text-ink border border-line hover:border-ink active:bg-paper focus-visible:outline-ink",
+  danger: "bg-red text-surface hover:brightness-95 focus-visible:outline-red",
+};
+
+/** Shared look for a button and a link that behaves like one. */
+function buttonClasses(variant: Variant, block: boolean, className?: string) {
+  return cn(
+    "inline-flex min-h-tap items-center justify-center gap-2 rounded-lg px-5 py-3",
+    "font-sans text-base font-semibold leading-none",
+    "transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
+    block && "w-full",
+    variantClasses[variant],
+    className,
+  );
+}
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -13,14 +34,6 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Full width. On by default: phones want one wide primary action. */
   block?: boolean;
 }
-
-const variantClasses: Record<Variant, string> = {
-  primary:
-    "bg-green text-surface hover:bg-green-deep active:bg-green-deep focus-visible:outline-green",
-  secondary:
-    "bg-surface text-ink border border-line hover:border-ink active:bg-paper focus-visible:outline-ink",
-  danger: "bg-red text-surface hover:brightness-95 focus-visible:outline-red",
-};
 
 /**
  * The one primary action on a screen.
@@ -50,16 +63,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={inert}
       aria-busy={loading || undefined}
       className={cn(
-        "inline-flex min-h-tap items-center justify-center gap-2 rounded-lg px-5 py-3",
-        "font-sans text-base font-semibold leading-none",
-        "transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
+        buttonClasses(variant, block, className),
         "disabled:cursor-not-allowed",
-        block && "w-full",
-        variantClasses[variant],
         // Disabled reads as inert; loading keeps full color so the action
         // still looks alive.
         disabled && !loading && "opacity-45",
-        className,
       )}
       {...rest}
     >
@@ -68,6 +76,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     </button>
   );
 });
+
+export interface ButtonLinkProps extends ComponentProps<typeof Link> {
+  variant?: Variant;
+  block?: boolean;
+}
+
+/** A navigation that should look like the primary action, such as a call to action. */
+export function ButtonLink({
+  variant = "primary",
+  block = true,
+  className,
+  children,
+  ...rest
+}: ButtonLinkProps) {
+  return (
+    <Link className={buttonClasses(variant, block, className)} {...rest}>
+      <span className="truncate">{children}</span>
+    </Link>
+  );
+}
 
 function Spinner() {
   return (
