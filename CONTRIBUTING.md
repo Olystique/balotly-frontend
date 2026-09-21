@@ -6,9 +6,11 @@ up an issue. `CLAUDE.md` has the design rules; this file has the mechanics.
 ## Issues and branches
 
 Every piece of work is a GitHub issue named `[FE-xx] Title`. Take the issue
-you are assigned, branch from `main` as `feature/fe-xx-short-name`, and open
-a pull request back to `main` when it is done. One issue per pull request.
-Link the issue in the PR body.
+you are assigned, branch from `development` as `feature/fe-xx-short-name`,
+and open a pull request back to `development` when it is done. `main` is
+promoted from `development` by the owner; never target it directly. One
+issue per pull request. Put `Closes #N` in the PR body so the issue closes
+when it merges.
 
 Do not start an issue whose "Depends on" issues are not merged yet. Backend
 dependencies are listed too; if the backend endpoint is not merged, build
