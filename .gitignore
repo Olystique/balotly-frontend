@@ -43,3 +43,4 @@ next-env.d.ts
 
 # spec documents stay local
 BALOTLY_*_SPEC.md
+.screens
