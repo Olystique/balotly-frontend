@@ -227,6 +227,10 @@ export interface SettlementRow {
   candidate: { id: string; name: string; slug: string; status: CandidateStatus };
   amount_kobo: number;
   status: SettlementStatus;
+  /** Exactly the rows a release would pay right now. */
+  releasable: boolean;
+  /** Why a held row is left out of the release, or null. */
+  blocked_reason: "disqualified" | "no_verified_bank_account" | "nothing_to_pay" | null;
   actioned_by: string | null;
   actioned_at: string | null;
   provider_reference: string | null;

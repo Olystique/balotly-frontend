@@ -1176,10 +1176,17 @@ route("GET", "/organizer/contests/:id/settlements", ({ req, params }) => {
     },
     settlements: rows.map((s) => {
       const k = candidateOf(s.candidate_id);
+      const blocked =
+        s.status !== "held" ? null
+          : k.status === "disqualified" ? "disqualified"
+            : db.subaccounts.get(k.id)?.status !== "verified" ? "no_verified_bank_account"
+              : s.amount_kobo === 0 ? "nothing_to_pay" : null;
       return {
         id: s.id,
         amount_kobo: s.amount_kobo,
         status: s.status,
+        releasable: releasable(s),
+        blocked_reason: blocked,
         actioned_by: s.actioned_by,
         actioned_at: s.actioned_at,
         provider_reference: s.provider_reference,
