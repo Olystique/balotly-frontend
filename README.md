@@ -34,3 +34,20 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Local development
+
+```bash
+npm install
+cp .env.example .env.local
+npm run mock     # contract mock of the backend on http://localhost:8001
+npm run dev      # http://localhost:3000
+```
+
+`npm run mock` serves every endpoint the backend issues describe, with the
+same shapes and error codes, from in memory data that resets on restart.
+Point `NEXT_PUBLIC_API_BASE_URL` at the real backend instead when it is
+running. Sign in as `organizer@balotly.test` or `candidate@balotly.test`
+with password `password123`; the test hooks are listed at the top of
+`scripts/mock-api.mjs`. `MOCK_LIVE=1 npm run mock` casts a vote every five
+seconds so the live leaderboard has something to show.
