@@ -12,7 +12,8 @@ import type { Leaderboard } from "@/lib/types";
  * the first frame after it is the truth. Reconnects back off from 1 to 15
  * seconds and never give up. While the socket is down the last known state
  * stays on screen, and the REST endpoint is polled every 15 seconds so a
- * network that blocks WebSockets still sees the count move.
+ * network that blocks WebSockets still sees the count move. Pass an empty
+ * id to stay disconnected (a closed contest has nothing to push).
  */
 const WS_BASE =
   process.env.NEXT_PUBLIC_WS_BASE_URL ||
@@ -29,6 +30,8 @@ export function useLiveLeaderboard(contestId: string, initial: Leaderboard | nul
   const backoff = useRef(1000);
 
   useEffect(() => {
+    // An empty id means "not live": nothing to connect to.
+    if (!contestId) return;
     let socket: WebSocket | null = null;
     let retry: ReturnType<typeof setTimeout> | undefined;
     let poll: ReturnType<typeof setInterval> | undefined;
