@@ -69,3 +69,8 @@ export function timeAgo(isoString: string, now = Date.now()): string {
 export function lagosInputToIso(value: string): string {
   return new Date(`${value}:00+01:00`).toISOString();
 }
+
+/** The reverse, to prefill a datetime-local input: "2026-10-03T18:00". */
+export function isoToLagosInput(isoString: string): string {
+  return new Date(Date.parse(isoString) + 60 * 60 * 1000).toISOString().slice(0, 16);
+}

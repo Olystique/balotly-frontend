@@ -68,7 +68,7 @@ export default async function CandidateDashboardPage({ searchParams }: Props) {
           candidateId={c.id}
           categoryId={d.category.id}
           contestId={contest.id}
-          votingOpen={isVotingOpen(contest.status, contest.ends_at)}
+          votingOpen={isVotingOpen(contest.status, contest.starts_at, contest.ends_at)}
           initialTotal={d.votes.total}
           initialRank={d.votes.rank}
           candidateCount={d.votes.category_candidate_count}
@@ -149,7 +149,8 @@ function SettlementText({ status, actionedAt, reason }: { status: string | null;
   return <span className="text-sm">Held until the organizer releases it after the contest</span>;
 }
 
-/** Server side, per request: whether votes can still arrive. */
-function isVotingOpen(status: string, endsAt: string): boolean {
-  return status === "active" && Date.parse(endsAt) > Date.now();
+/** Server side, per request: whether votes can arrive right now. */
+function isVotingOpen(status: string, startsAt: string, endsAt: string): boolean {
+  const now = Date.now();
+  return status === "active" && Date.parse(startsAt) <= now && now < Date.parse(endsAt);
 }
