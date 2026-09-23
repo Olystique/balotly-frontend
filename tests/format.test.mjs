@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { formatCount, formatDateTime, timeAgo, votesLabel } from "../src/lib/format.ts";
+import { formatCount, formatDateTime, lagosInputToIso, timeAgo, votesLabel } from "../src/lib/format.ts";
 
 test("vote counts use thousands separators and the right noun", () => {
   assert.equal(formatCount(4812), "4,812");
@@ -23,4 +23,8 @@ test("times are Lagos time and say am or pm", () => {
   assert.match(morning, /7:33/);
   assert.match(morning, /am/i);
   assert.match(formatDateTime("2026-09-28T17:00:00Z"), /6:00\s?pm/i);
+});
+
+test("a time typed in the setup form is Lagos time", () => {
+  assert.equal(lagosInputToIso("2026-10-01T08:00"), "2026-10-01T07:00:00.000Z");
 });

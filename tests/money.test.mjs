@@ -22,3 +22,15 @@ test("negative amounts keep the sign in front of the symbol", () => {
 test("floats are refused; the API sends integer kobo", () => {
   assert.throws(() => formatNaira(500.5), TypeError);
 });
+
+import { nairaInputToKobo } from "../src/lib/money.ts";
+
+test("organizer naira input becomes integer kobo exactly once", () => {
+  assert.equal(nairaInputToKobo("100"), 10000);
+  assert.equal(nairaInputToKobo("1,000"), 100000);
+  assert.equal(nairaInputToKobo(" ₦500 "), 50000);
+});
+
+test("decimals, zero, negatives and words are refused", () => {
+  for (const bad of ["100.50", "0", "-100", "abc", "", "1e3"]) assert.equal(nairaInputToKobo(bad), null, bad);
+});

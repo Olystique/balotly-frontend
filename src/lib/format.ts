@@ -59,3 +59,13 @@ export function timeAgo(isoString: string, now = Date.now()): string {
   const days = Math.round(hours / 24);
   return `${days} day${days === 1 ? "" : "s"} ago`;
 }
+
+/**
+ * A datetime-local value ("2026-10-01T08:00") is wall clock time with no
+ * zone. Every time in the product is shown in Lagos time, so it is read as
+ * Lagos time too, whatever zone the organizer's phone is set to. Nigeria has
+ * no daylight saving, so the offset is always +01:00.
+ */
+export function lagosInputToIso(value: string): string {
+  return new Date(`${value}:00+01:00`).toISOString();
+}
