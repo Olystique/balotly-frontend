@@ -5,13 +5,11 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Notice } from "@/components/ui/notice";
 import { ApiError, bff, json } from "@/lib/api";
-
-const EXTENSIONS: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/svg+xml": "svg", "image/webp": "webp" };
+import { downloadFile } from "@/lib/download";
 
 /**
- * The poster, with a real download. The download attribute alone does not
- * work across origins (the poster lives in object storage), so the image is
- * fetched as a blob and saved from a local URL.
+ * The poster, with a real download (see downloadFile for why that takes a
+ * fetch) and regenerate.
  */
 export function PosterBlock({
   candidateId,
@@ -46,17 +44,7 @@ export function PosterBlock({
     setDownloading(true);
     setMessage(null);
     try {
-      const response = await fetch(posterUrl);
-      if (!response.ok) throw new Error(String(response.status));
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${slug}-poster.${EXTENSIONS[blob.type] ?? "png"}`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      await downloadFile(posterUrl, `${slug}-poster`);
     } catch {
       setMessage({ tone: "error", text: "We couldn't download your poster. Check your connection and try again." });
     } finally {
