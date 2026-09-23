@@ -52,12 +52,15 @@ async function forward(request: NextRequest, { params }: { params: Promise<{ pat
     );
   }
 
-  const response = new NextResponse(upstream.status === 204 ? null : await upstream.arrayBuffer(), {
+  const raw = upstream.status === 204 ? null : await upstream.arrayBuffer();
+  const { body: responseBody, issuedToken } = liftToken(raw, upstream.headers.get("content-type"));
+  const response = new NextResponse(responseBody, {
     status: upstream.status,
     headers: { "Content-Type": upstream.headers.get("content-type") ?? "application/json" },
   });
-  if (refreshed) {
-    response.cookies.set(ACCESS_COOKIE, refreshed, { ...cookieOptions, maxAge: accessMaxAge(refreshed) });
+  const token = issuedToken ?? refreshed;
+  if (token) {
+    response.cookies.set(ACCESS_COOKIE, token, { ...cookieOptions, maxAge: accessMaxAge(token) });
   }
   return response;
 }
@@ -74,3 +77,24 @@ function sameOrigin(request: NextRequest): boolean {
 }
 
 export { forward as GET, forward as POST, forward as PATCH, forward as DELETE };
+
+/**
+ * Some endpoints hand back a fresh access token (creating an organization
+ * does, BE-03, so the token carries the new organization id). It goes into
+ * the httpOnly cookie and is removed from the body, so no token ever reaches
+ * browser JavaScript whichever endpoint issued it.
+ */
+function liftToken(raw: ArrayBuffer | null, contentType: string | null): { body: ArrayBuffer | string | null; issuedToken: string | null } {
+  if (!raw || !contentType?.includes("application/json")) return { body: raw, issuedToken: null };
+  let parsed: { data?: Record<string, unknown> };
+  try {
+    parsed = JSON.parse(new TextDecoder().decode(raw));
+  } catch {
+    return { body: raw, issuedToken: null };
+  }
+  const token = parsed?.data?.access_token;
+  if (typeof token !== "string") return { body: raw, issuedToken: null };
+  delete parsed.data!.access_token;
+  delete parsed.data!.refresh_token;
+  return { body: JSON.stringify(parsed), issuedToken: token };
+}

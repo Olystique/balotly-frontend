@@ -22,3 +22,16 @@ export function formatNaira(amountKobo: number): string {
   const value = abs % 100 === 0 ? wholeNaira.format(abs / 100) : nairaAndKobo.format(abs / 100);
   return `${sign}₦${value}`;
 }
+
+/**
+ * What an organizer typed in a naira field, as integer kobo, or null if it
+ * is not a whole positive number of naira. Commas and spaces are allowed
+ * ("1,000"); decimals are not, on purpose: vote prices are whole naira.
+ */
+export function nairaInputToKobo(input: string): number | null {
+  const cleaned = input.replace(/[,\s₦]/g, "");
+  if (!/^\d+$/.test(cleaned)) return null;
+  const naira = Number(cleaned);
+  if (!Number.isSafeInteger(naira) || naira <= 0) return null;
+  return naira * 100;
+}
