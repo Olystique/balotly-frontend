@@ -961,7 +961,8 @@ route("POST", "/candidates/:id/bank-account/resolve", ({ req, params, body }) =>
     percentage_charge: null,
   };
   db.subaccounts.set(c.id, sub);
-  const { subaccount_code, ...view } = bankView(sub);
+  const view = bankView(sub);
+  delete view.subaccount_code;
   return ok(view, "Account resolved.");
 });
 
@@ -1175,8 +1176,16 @@ route("GET", "/organizer/contests/:id/settlements", ({ req, params }) => {
     },
     settlements: rows.map((s) => {
       const k = candidateOf(s.candidate_id);
-      const { contest_id, candidate_id, ...rest } = s;
-      return { ...rest, candidate: { id: k.id, name: k.name, slug: k.slug, status: k.status } };
+      return {
+        id: s.id,
+        amount_kobo: s.amount_kobo,
+        status: s.status,
+        actioned_by: s.actioned_by,
+        actioned_at: s.actioned_at,
+        provider_reference: s.provider_reference,
+        failure_reason: s.failure_reason,
+        candidate: { id: k.id, name: k.name, slug: k.slug, status: k.status },
+      };
     }),
   });
 });
