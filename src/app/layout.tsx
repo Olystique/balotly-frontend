@@ -19,6 +19,9 @@ const ibmPlexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
+  // Resolves relative Open Graph URLs (the vote page's og:url) to absolute
+  // ones, which WhatsApp and every other link preview requires.
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: "Balotly",
   description: "Paid campus voting with a live, verified count.",
 };
